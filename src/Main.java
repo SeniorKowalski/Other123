@@ -20,7 +20,6 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         int[] counts = new int[products.length];
-        int[] productSum = new int[products.length];
 
         while (true) {
             System.out.print("Введите номер товара и количество через пробел или end: ");
@@ -37,37 +36,32 @@ public class Main {
         }
 
         System.out.println("Ваша корзина покупок:");
-        int sum = 0;
-        boolean isOnSale = false;
+        int sumToCheck = 0;
+        boolean isOnSale;
         for (int i = 0; i < products.length; i++) {
-            if (counts[i] != 0) {
-                isOnSale = false;
-                for (String saleProduct : productsOnSale) {
-                    if (products[i].equals(saleProduct)) {
-                        isOnSale = true;
-                    }
-                }
-                    productSum[i] += (isOnSale ? prices[i] * (counts[i] / 3 * 2 + counts[i] % 3) : prices[i] * counts[i]);
-                    sum += productSum[i];
-            }
+            sumToCheck += prices[i] * counts[i];
         }
-        boolean doBonus = sum >= MIN_COST_FOR_BONUS;
+        boolean doBonus = sumToCheck >= MIN_COST_FOR_BONUS;
+        int sum = 0;
         for (int j = 0; j < products.length; j++) {
             isOnSale = false;
             if (counts[j] != 0) {
                 for (String saleProduct : productsOnSale) {
                     if (products[j].equals(saleProduct)) {
                         isOnSale = true;
+                        break;
                     }
                 }
+                int currentPrice = (isOnSale ? prices[j] * (counts[j] / 3 * 2 + counts[j] % 3) : prices[j] * counts[j]);
+                sum += currentPrice;
                 if (doBonus) {
                     counts[j] += 1;
-                    System.out.println("\t" + products[j] + " " + counts[j] + " шт. за " + productSum[j] + " руб." + (isOnSale ? "(распродажа!)" : ""));
+                    System.out.println("\t" + products[j] + " " + counts[j] + " шт. за " + currentPrice + " руб." + (isOnSale ? "(распродажа!)" : ""));
                 } else {
-                    System.out.println("\t" + products[j] + " " + counts[j] + " шт. за " + productSum[j] + " руб." + (isOnSale ? "(распродажа!)" : ""));
+                    System.out.println("\t" + products[j] + " " + counts[j] + " шт. за " + currentPrice + " руб." + (isOnSale ? "(распродажа!)" : ""));
                 }
             }
         }
-            System.out.println("Итого: " + sum + " руб.");
+        System.out.println("Итого: " + sum + " руб.");
     }
 }
